@@ -1,0 +1,1 @@
+The files in this folder are meant to test the file extension checker of "extract_receipt_data.py"
