@@ -43,7 +43,7 @@ def parse_data_to_df(arrExtractedPages):
 
 
 
-def extract_data(strFilePath, isWriteOutput=False) -> tuple[str, str, pd.DataFrame]:
+def extract_pdf_data(strFilePath, isWriteOutput=False) -> tuple[str, str, pd.DataFrame]:
     arrLines = []
     with pdfplumber.open(strFilePath) as pdf:
         for page in pdf.pages:
@@ -70,5 +70,5 @@ if __name__ == "__main__":
     strRelTestPDFPath = "TEST_receipt_files\input_files\PDF\Receipt8.pdf"
     strDirname = os.path.dirname(__file__)
     strAbsTestPDFPath = os.path.join(strDirname, strRelTestPDFPath)
-    strStatusCode, strStatusMessage, dfExtractedData = extract_data(strAbsTestPDFPath, True)
+    strStatusCode, strStatusMessage, dfExtractedData = extract_pdf_data(strAbsTestPDFPath, True)
     print(f"Status: {strStatusCode}, Message: {strStatusMessage}")

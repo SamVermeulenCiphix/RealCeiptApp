@@ -6,7 +6,10 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
+from django.core.files.storage import FileSystemStorage
 
+from .document_processing_functions.handle_uploaded_files import handle_uploaded_file
+from .forms import UploadFileForm
 from .models import Question, Choice
 
 class IndexView(generic.ListView):
@@ -18,6 +21,27 @@ class IndexView(generic.ListView):
         published in the future).
         """
         return Question.objects.filter(pub_date__lte=timezone.now()).order_by("-pub_date")[:5]
+
+
+def upload_file(request):
+    if request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        print("File uploaded with name: " + request.FILES['file'].name)
+        for field in form:
+            print("Field Error:", field.name,  field.errors)
+        if form.is_valid():
+            print("Upload success")
+            uploaded_file = request.FILES["file"]
+            fs = FileSystemStorage()
+            saved_name = fs.save(uploaded_file.name, uploaded_file)
+            handle_uploaded_file(saved_name)
+            form.save()
+            return HttpResponseRedirect("/success/")
+    else:
+        form = UploadFileForm()
+    return render(request, "ReceiptHub/upload_view.html", {"form": form})
+
+
 
 
 class DetailView(generic.DetailView):

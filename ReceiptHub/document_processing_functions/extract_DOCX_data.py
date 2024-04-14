@@ -43,7 +43,7 @@ def parse_data_to_df(arrExtractedPages):
 
 
 
-def extract_data(strFilePath, isWriteOutput=False) -> tuple[str, str, pd.DataFrame]:
+def extract_docx_data(strFilePath, isWriteOutput=False) -> tuple[str, str, pd.DataFrame]:
     arrLines = []
     docxDocument = docx.Document(strFilePath)
     for paragraph in docxDocument.paragraphs:
@@ -71,6 +71,6 @@ if __name__ == "__main__":
     strRelTestFilePath = "TEST_receipt_files\input_files\DOCX\Receipt10.docx"
     strDirname = os.path.dirname(__file__)
     strAbsTestFilePath = os.path.join(strDirname, strRelTestFilePath)
-    strStatusCode, strStatusMessage, dfExtractedData = extract_data(strAbsTestFilePath, True)
+    strStatusCode, strStatusMessage, dfExtractedData = extract_docx_data(strAbsTestFilePath, True)
     print(f"Status: {strStatusCode}, Message: {strStatusMessage}")
     
