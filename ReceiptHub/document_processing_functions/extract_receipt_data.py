@@ -1,6 +1,8 @@
 import os
 import pandas as pd
-import extract_DOCX_data, extract_PDF_data, extract_XLSX_data
+from .extract_DOCX_data import extract_docx_data
+from .extract_PDF_data import extract_pdf_data
+from .extract_XLSX_data import extract_xlsx_data
 
 
 def extract_receipt_content(strFilePath: str) -> tuple[str, str, pd.DataFrame]:
@@ -9,18 +11,19 @@ def extract_receipt_content(strFilePath: str) -> tuple[str, str, pd.DataFrame]:
     
     if strFileExtension.lower() == ".pdf":
         # print("Given filetype is PDF for file: " + strFilePath)
-        return extract_PDF_data.extract_data(strFilePath, isWriteExtractedData)
+        return extract_pdf_data(strFilePath, isWriteExtractedData)
     
     elif strFileExtension.lower() == ".docx":
         # print("Given filetype is DOCX for file: " + strFilePath)
-        return extract_DOCX_data.extract_data(strFilePath, isWriteExtractedData)
+        return extract_docx_data(strFilePath, isWriteExtractedData)
     
     elif strFileExtension.lower() == ".xlsx":
         # print("Given filetype is XLSX for file: " + strFilePath)
-        return extract_XLSX_data.extract_data(strFilePath, isWriteExtractedData)
+        return extract_xlsx_data(strFilePath, isWriteExtractedData)
     
     else:
-        strStatusMessage = f"Extracted filetype \"{strFileExtension}\" is not accepted for file: " + strFilePath
+
+        strStatusMessage = f"Extracted filetype \"{strFileExtension}\" is not accepted for file: " + os.path.basename(strFilePath)
         print(strStatusMessage)
         return "ERROR", strStatusMessage, pd.DataFrame([]) 
 

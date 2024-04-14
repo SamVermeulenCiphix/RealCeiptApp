@@ -2,6 +2,50 @@ import datetime
 from django.contrib import admin
 from django.db import models
 from django.utils import timezone
+from django.core.files.storage import FileSystemStorage
+from .document_processing_functions.handle_uploaded_files import handle_uploaded_file
+import uuid
+import os
+from django.conf import settings
+
+
+class Receipt(models.Model):
+    def __str__(self):
+        if self.file_displayname:
+            return self.file_displayname
+        else:
+            return "No displayname given"
+
+    def save_file(self, file):
+        fs = FileSystemStorage()
+        self.file_displayname = file.name
+        self.upload_date = datetime.datetime.now()
+        file_fullname = str(self.file_uuid) + "_" + file.name
+        saved_name = fs.save(file_fullname, file)
+        # self.uploaded_file = open(os.path.join(settings.MEDIA_ROOT, saved_name), encoding='latin-1').read()
+        if os.path.isfile(file.name):
+            os.remove(file.name)
+        self.file_fullpath = saved_name
+        # TODO: SET UP THE URL PREFIX DYNAMICALLY
+        self.url = "/ReceiptHub" + fs.url(saved_name)
+        
+    def handle_file(self):
+        strStatusCode, strStatusMessage, dfExtractedData = handle_uploaded_file(self.file_fullpath)
+        if strStatusCode == "SUCCESS":
+            self.html_datatable = dfExtractedData.to_html()
+            self.total_amount = dfExtractedData['ItemPrice'].sum()
+        return strStatusCode, strStatusMessage
+
+    # uploaded_file = models.FileField(null=True, blank=True)
+    file_uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    file_displayname = models.CharField(max_length=200, null=True, blank=True)
+    file_fullpath = models.CharField(max_length=200, null=True, blank=True)
+    upload_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    html_datatable = models.CharField(max_length=5000, null=True, blank=True)
+    url = models.CharField(max_length=200, null=True, blank=True)
+    total_amount = models.IntegerField(null=True, blank=True)
+    
+
 
 # TODO: REMOVE THESE TEST CLASSES
 class Question(models.Model):

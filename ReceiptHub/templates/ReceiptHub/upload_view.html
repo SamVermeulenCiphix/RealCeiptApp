@@ -1,0 +1,27 @@
+{% block content %}
+<a href="{% url 'ReceiptHub:receipt_index' %}">Back to file overview</a><br> 
+<h2>Upload a receipt</h2>
+ <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="file">
+    <button type="submit">Upload receipt</button>
+ </form>
+ {% if url and shown_filename %}
+    <p>Uploaded receipt: <a href="{{ url }}">{{ shown_filename }}</a></p>
+ {% endif %}
+
+ {% if error %}
+    <p>
+        Couldn't read receipt data with the following message:<br>
+        <b>{{ error }}</b>
+    </p>
+ {% endif %}
+
+ {% if dataframe %}
+    <p>
+        Extracted data: <br>
+        Total amount: €{{ total_amount }}
+        {{ dataframe|safe }}
+    </p>
+ {% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+<a href="{% url 'ReceiptHub:receipt_index' %}">Back to file overview</a><br>
+<h1>{{ receipt.file_displayname }}</h1>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Download Button</title>
+</head>
+<body>
+    <p>Click the button below to download the file.</p>
+    <a href="{{ receipt.url }}" download>
+        <button>Download File</button>
+    </a>
+    <p>Click the button below to remove the receipt from the system.</p>
+    <a href="{% url 'ReceiptHub:delete' receipt.file_uuid %}">
+        <button>Delete Receipt</button>
+    </a>
+</body>
+<br>
+
+{% if receipt.html_datatable %}
+<p>
+    Extracted data: <br>
+    Total amount: €{{ receipt.total_amount }}
+    {{ receipt.html_datatable|safe }}
+</p>
+{% endif %}

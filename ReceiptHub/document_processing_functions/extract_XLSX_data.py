@@ -42,7 +42,7 @@ import re
 
 
 
-def extract_data(strFilePath, isWriteOutput=False) -> tuple[str, str, pd.DataFrame]:
+def extract_xlsx_data(strFilePath, isWriteOutput=False) -> tuple[str, str, pd.DataFrame]:
     xlsxDocument = openpyxl.load_workbook(strFilePath)
     
     try:
@@ -93,7 +93,7 @@ def extract_data(strFilePath, isWriteOutput=False) -> tuple[str, str, pd.DataFra
     # strStatusCode, strStatusMessage, dfExtractedData = parse_data_to_df(arrLines)
     dictExtractedData = {'ItemName': arrExtractedItems, 'ItemPrice': arrExtractedPrices}
     dfExtractedData = pd.DataFrame(dictExtractedData)
-    dfExtractedData.index.name = "Nr"
+    dfExtractedData.columns.name = "Nr"
     strStatusCode, strStatusMessage, dfExtractedData = ("SUCCESS", "Data parsing successful!", dfExtractedData)
     if isWriteOutput:
         try:
@@ -116,6 +116,6 @@ if __name__ == "__main__":
     strRelTestFilePath = "TEST_receipt_files\input_files\XLSX\Receipt1.xlsx"
     strDirname = os.path.dirname(__file__)
     strAbsTestFilePath = os.path.join(strDirname, strRelTestFilePath)
-    strStatusCode, strStatusMessage, dfExtractedData = extract_data(strAbsTestFilePath, True)
+    strStatusCode, strStatusMessage, dfExtractedData = extract_xlsx_data(strAbsTestFilePath, True)
     print(f"Status: {strStatusCode}, Message: {strStatusMessage}")
     
