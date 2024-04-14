@@ -5,4 +5,21 @@
     <input type="file" name="file">
     <button type="submit">Upload receipt</button>
  </form>
- {% endblock %}
+ {% if url and shown_filename %}
+    <p>Uploaded receipt: <a href="{{ url }}">{{ shown_filename }}</a></p>
+ {% endif %}
+
+ {% if error %}
+    <p>
+        Couldn't read receipt data with the following message:<br>
+        <b>{{ error }}</b>
+    </p>
+ {% endif %}
+
+ {% if dataframe %}
+    <p>
+        Extracted data: <br>
+        {{ dataframe|safe }}
+    </p>
+ {% endif %}
+{% endblock %}

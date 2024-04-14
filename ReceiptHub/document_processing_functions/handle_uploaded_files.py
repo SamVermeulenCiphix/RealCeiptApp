@@ -18,6 +18,7 @@ def handle_uploaded_file(file):
     strStatusCode, strStatusMessage, dfExtractedData = extract_receipt_content(strFilePath)
     print(f"{strStatusCode}! {strStatusMessage}")
     print(f"Extracted data: \n {dfExtractedData.to_string()}")
+    return strStatusCode, strStatusMessage, dfExtractedData
 
 
 if __name__ == "__main__":

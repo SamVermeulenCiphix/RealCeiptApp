@@ -22,7 +22,8 @@ def extract_receipt_content(strFilePath: str) -> tuple[str, str, pd.DataFrame]:
         return extract_xlsx_data(strFilePath, isWriteExtractedData)
     
     else:
-        strStatusMessage = f"Extracted filetype \"{strFileExtension}\" is not accepted for file: " + strFilePath
+
+        strStatusMessage = f"Extracted filetype \"{strFileExtension}\" is not accepted for file: " + os.path.basename(strFilePath)
         print(strStatusMessage)
         return "ERROR", strStatusMessage, pd.DataFrame([]) 
 

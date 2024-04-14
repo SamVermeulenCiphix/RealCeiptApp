@@ -17,7 +17,7 @@ class Receipt(models.Model):
 
     def was_published_recently(self):
         return (self.pub_date >= timezone.now() - datetime.timedelta(days=1) and self.pub_date <= timezone.now())
-
+    # FileField for the file, CharField for the HTML table, CharField for the filename, DateTimeField for the upload date
     # fields = ['uploaded_file',]
     # filename = models.CharField(max_length=200)
     # pub_date = models.DateTimeField("date published")

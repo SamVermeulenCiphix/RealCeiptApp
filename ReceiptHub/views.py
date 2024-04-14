@@ -8,6 +8,8 @@ from django.views import generic
 from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
 
+import uuid
+
 from .document_processing_functions.handle_uploaded_files import handle_uploaded_file
 from .forms import UploadFileForm
 from .models import Question, Choice
@@ -24,19 +26,35 @@ class IndexView(generic.ListView):
 
 
 def upload_file(request):
+    context = {}
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         print("File uploaded with name: " + request.FILES['file'].name)
         for field in form:
             print("Field Error:", field.name,  field.errors)
+        
         if form.is_valid():
             print("Upload success")
             uploaded_file = request.FILES["file"]
             fs = FileSystemStorage()
-            saved_name = fs.save(uploaded_file.name, uploaded_file)
-            handle_uploaded_file(saved_name)
+            file_uuid = str(uuid.uuid4()) + "_" + uploaded_file.name
+            saved_name = fs.save(file_uuid, uploaded_file)
+            url = "/ReceiptHub" + fs.url(saved_name)
+            print(url)
+            context['url'] = url
+            context['shown_filename'] = uploaded_file.name
+            strStatusCode, strStatusMessage, dfExtractedData = handle_uploaded_file(saved_name)
+            if strStatusCode == "SUCCESS":
+                htmlDataFrame = dfExtractedData.to_html()
+                context['dataframe'] = htmlDataFrame
+            elif strStatusCode == "ERROR":
+                context['error'] = strStatusMessage
+            else:
+                print("Unexpected status code returned: " + strStatusCode)
+                context['error'] = "An unexpected error occurred when reading the data from the file!"
             form.save()
-            return HttpResponseRedirect("/success/")
+            context['form'] = form
+            return render(request, "ReceiptHub/upload_view.html", context=context)
     else:
         form = UploadFileForm()
     return render(request, "ReceiptHub/upload_view.html", {"form": form})

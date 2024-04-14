@@ -93,7 +93,7 @@ def extract_xlsx_data(strFilePath, isWriteOutput=False) -> tuple[str, str, pd.Da
     # strStatusCode, strStatusMessage, dfExtractedData = parse_data_to_df(arrLines)
     dictExtractedData = {'ItemName': arrExtractedItems, 'ItemPrice': arrExtractedPrices}
     dfExtractedData = pd.DataFrame(dictExtractedData)
-    dfExtractedData.index.name = "Nr"
+    dfExtractedData.columns.name = "Nr"
     strStatusCode, strStatusMessage, dfExtractedData = ("SUCCESS", "Data parsing successful!", dfExtractedData)
     if isWriteOutput:
         try:

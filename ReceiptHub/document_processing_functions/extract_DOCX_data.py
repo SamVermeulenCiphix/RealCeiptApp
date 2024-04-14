@@ -36,7 +36,7 @@ def parse_data_to_df(arrExtractedPages):
                 # print(f"Start of data NOT found on line {str(idx)}! Line text: {line}")
     dictExtractedData = {'ItemName': arrParsedNames, 'ItemPrice': arrParsedPrices}
     dfExtractedData = pd.DataFrame(dictExtractedData)
-    dfExtractedData.index.name = "Nr"
+    dfExtractedData.columns.name = "Nr"
     return "SUCCESS", "Data parsing successful!", dfExtractedData
 
 

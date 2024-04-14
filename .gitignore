@@ -153,3 +153,4 @@ cython_debug/
 
 # non-default file exclusions
 receipts/*
+ReceiptHub/document_processing_functions/TEST_receipt_files/generated_output/*
