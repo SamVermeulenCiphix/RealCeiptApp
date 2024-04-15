@@ -133,3 +133,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = os.path.join(BASE_DIR,'receipts')
 
 MEDIA_URL = "/receipts/"
+
+# AUTH_USER_MODEL = 'ReceiptHub.MyUser'

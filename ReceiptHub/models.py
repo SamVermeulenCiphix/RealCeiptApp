@@ -7,7 +7,10 @@ from .document_processing_functions.handle_uploaded_files import handle_uploaded
 import uuid
 import os
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 
+# class MyUser(AbstractUser):
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
 class Receipt(models.Model):
     def __str__(self):
@@ -16,7 +19,7 @@ class Receipt(models.Model):
         else:
             return "No displayname given"
 
-    def save_file(self, file):
+    def save_file(self, file, creator_id):
         fs = FileSystemStorage()
         self.file_displayname = file.name
         self.upload_date = datetime.datetime.now()
@@ -28,6 +31,7 @@ class Receipt(models.Model):
         self.file_fullpath = saved_name
         # TODO: SET UP THE URL PREFIX DYNAMICALLY
         self.url = "/ReceiptHub" + fs.url(saved_name)
+        self.creator_id = creator_id
         
     def handle_file(self):
         strStatusCode, strStatusMessage, dfExtractedData = handle_uploaded_file(self.file_fullpath)
@@ -38,6 +42,7 @@ class Receipt(models.Model):
 
     # uploaded_file = models.FileField(null=True, blank=True)
     file_uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    creator_id = models.CharField(max_length=32, null=True, blank=True)
     file_displayname = models.CharField(max_length=200, null=True, blank=True)
     file_fullpath = models.CharField(max_length=200, null=True, blank=True)
     upload_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)

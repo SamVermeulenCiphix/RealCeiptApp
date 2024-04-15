@@ -1,27 +1,96 @@
-<a href="{% url 'ReceiptHub:receipt_index' %}">Back to file overview</a><br>
-<h1>{{ receipt.file_displayname }}</h1>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Download Button</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File Download and Details</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #FFFFFF; /* White */
+    color: #36454F; /* Charcoal */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+  }
+  
+  h1 {
+    color: #0047AB; /* Cobalt Blue */
+    margin-top: 20px;
+  }
+  
+  a {
+    color: #0047AB; /* Cobalt Blue */
+    text-decoration: none;
+    margin-bottom: 20px;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  button {
+    background-color: #0047AB; /* Cobalt Blue */
+    color: #FFFFFF; /* White */
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #87CEEB; /* Sky Blue */
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 20px;
+    padding: 20px;
+    border: 2px solid #0047AB; /* Cobalt Blue */
+    border-radius: 10px;
+    background-color: #F5F5F5; /* Light Grey */
+  }
+  
+  .data-table {
+    margin-top: 20px;
+    text-align: left;
+  }
+</style>
 </head>
 <body>
-    <p>Click the button below to download the file.</p>
-    <a href="{{ receipt.url }}" download>
-        <button>Download File</button>
-    </a>
-    <p>Click the button below to remove the receipt from the system.</p>
-    <a href="{% url 'ReceiptHub:delete' receipt.file_uuid %}">
-        <button>Delete Receipt</button>
-    </a>
-</body>
-<br>
 
-{% if receipt.html_datatable %}
-<p>
-    Extracted data: <br>
-    Total amount: €{{ receipt.total_amount }}
-    {{ receipt.html_datatable|safe }}
-</p>
-{% endif %}
+<div class="container">
+    <a href="{% url 'ReceiptHub:receipt_index' %}">Back to file overview</a>
+    {% if not denied %}
+        <h1>{{ receipt.file_displayname }}</h1>
+
+        <p>Click the button below to download the file.</p>
+        <a href="{{ receipt.url }}" download>
+            <button>Download File</button>
+        </a>
+        <p>Click the button below to remove the receipt from the system.</p>
+        <a href="{% url 'ReceiptHub:delete' receipt.file_uuid %}">
+            <button>Delete Receipt</button>
+        </a>
+
+        {% if receipt.html_datatable %}
+        <div class="data-table">
+            <p>Extracted data:</p>
+            <p>Total amount: €{{ receipt.total_amount }}</p>
+            {{ receipt.html_datatable|safe }}
+        </div>
+        {% endif %}
+    {% else %}
+        <p>{{ denied }}</p>
+    {% endif %}
+</div>
+
+</body>
+</html>
