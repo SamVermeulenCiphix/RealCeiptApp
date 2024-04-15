@@ -1,5 +1,7 @@
 import os
 import pandas as pd
+# when running this file locally, remove the "." for relative imports
+# when running it through the Django app, keep the "."
 from .extract_DOCX_data import extract_docx_data
 from .extract_PDF_data import extract_pdf_data
 from .extract_XLSX_data import extract_xlsx_data

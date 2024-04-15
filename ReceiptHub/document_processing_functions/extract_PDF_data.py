@@ -14,7 +14,7 @@ def parse_data_to_df(arrExtractedPages):
     # print(f"Lines found: {str(len(arrExtractedLines))}")
     for idx, line in enumerate(arrExtractedLines):
         line = re.sub(" +", " ", line)
-        arrSplitLine = str.split(line, " ")
+        arrSplitLine = [value.strip() for value in str.split(line, " ") if value.strip()]
         if isDataFound:
             if len(arrSplitLine) != 2:
                 return "ERROR", f"Not exactly two values on line {str(idx)} starting below item and price headers", pd.DataFrame([])

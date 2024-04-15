@@ -1,0 +1,6 @@
+login capability
+remove question and choice models
+make the website prettier
+azure deployment
+migrate the document processing to the Receipt fully
+ask for confirmation before deleting the file
