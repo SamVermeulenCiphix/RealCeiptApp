@@ -43,7 +43,7 @@ def parse_data_to_df(arrExtractedPages):
 
 
 
-def extract_docx_data(strFilePath, isWriteOutput=False) -> tuple[str, str, pd.DataFrame]:
+def extract_docx_data(strFilePath, isWriteOutput=False):
     arrLines = []
     docxDocument = docx.Document(strFilePath)
     for paragraph in docxDocument.paragraphs:

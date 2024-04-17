@@ -43,7 +43,7 @@ def parse_data_to_df(arrExtractedPages):
 
 
 
-def extract_pdf_data(strFilePath, isWriteOutput=False) -> tuple[str, str, pd.DataFrame]:
+def extract_pdf_data(strFilePath, isWriteOutput=False):
     arrLines = []
     with pdfplumber.open(strFilePath) as pdf:
         for page in pdf.pages:

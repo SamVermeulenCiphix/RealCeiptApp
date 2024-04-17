@@ -18,7 +18,7 @@ class Receipt(models.Model):
         fs = FileSystemStorage()
         fs.delete(self.file_fullpath)
 
-    def delete(self) -> tuple[int, dict[str, int]]:
+    def delete(self):
         self.remove_file()
         return super().delete()
 

@@ -14,12 +14,14 @@ In order to run the app locally, please refer to the documentation below
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Installation
 
-NOTE: "```bash```" below means that the command below it must be put in a terminal
+NOTES: 
+- ```bash``` means that the command below it must be put in a terminal
+- please run all commands separately
+- in order to open a terminal, navigate to the folder where you want to download the project -> right click -> open in terminal
+
 
 1. Clone the repository:
 
@@ -45,6 +47,15 @@ NOTE: "```bash```" below means that the command below it must be put in a termin
 
     ```bash
     pip install -r requirements.txt
+    python -m pip install django-debug-toolbar
+    ```
+
+5. Prepare the database:
+    
+    ```bash
+    python manage.py migrate ReceiptHub zero
+    python manage.py makemigrations ReceiptHub
+    python manage.py migrate ReceiptHub
     ```
 
 ## Usage
@@ -55,4 +66,4 @@ NOTE: "```bash```" below means that the command below it must be put in a termin
     python manage.py runserver
     ```
 
-2. Open your web browser and navigate to `http://127.0.0.1:8000/ReceiptHub/receipts/` to view the application.
+2. Open your web browser and navigate to `http://127.0.0.1:8000/ReceiptHub/login/` to view the application.

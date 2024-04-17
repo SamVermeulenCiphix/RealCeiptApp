@@ -1,5 +1,4 @@
-requirements.txt and README
-it's a secret to everyone
+SKIP:
 azure deployment
 ask for confirmation before deleting the file
 
@@ -10,3 +9,5 @@ save the files in aa->bb->file format if filename is aabbsomethingelse
 remove question and choice models comments
 make the website prettier
 migrate the document processing to the Receipt fully
+requirements.txt and README
+it's a secret to everyone
