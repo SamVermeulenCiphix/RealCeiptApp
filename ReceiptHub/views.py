@@ -8,7 +8,6 @@ from .models import Receipt
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth import logout
-import uuid
 
 from .models import Receipt
 
@@ -18,51 +17,38 @@ def is_employee(user):
 from django.utils.decorators import method_decorator
 
 
-# Require login and "Employees" group membership
-# @login_required
-# @user_passes_test(is_employee)
 def receipt_view(request, file_uuid):
     receipt = get_object_or_404(Receipt, file_uuid=file_uuid)
-    print(request.user.id)
-    print(receipt.creator_id)
-    if not request.user or str(request.user.id) != str(receipt.creator_id):
+    # print(request.user.id)
+    # print(receipt.creator_id)
+    if request.user and request.user.is_staff or str(request.user.id) == str(receipt.creator_id):
+        return render(request, "ReceiptHub/receipt.html", {'receipt': receipt})
+    else:
         return render(request, "ReceiptHub/receipt.html", {'denied': "You do not have permission to view this receipt."})
     
-    return render(request, "ReceiptHub/receipt.html", {'receipt': receipt})
+    
 
-# Require login and "Employees" group membership
-# @method_decorator(login_required, name='dispatch')
-# @method_decorator(user_passes_test(is_employee), name='dispatch')
-# class ReceiptView(generic.DetailView):
-#     model = Receipt
-#     template_name = "ReceiptHub/receipt.html"
-#     def get_object(self) -> Model:
-#         slug = self.kwargs.get('file_uuid')
-#         receipt = Receipt.objects.get(file_uuid=slug)
-#         return receipt
 
 def receipt_index_view(request):
-    if request.user.id:
-        receipt_list = Receipt.objects.filter(creator_id=str(request.user.id)).order_by("file_displayname")[:50]
+    # staff can view all receipts
+    if request.user.is_staff:
+        receipt_list = Receipt.objects.all().order_by("file_displayname")
+    elif request.user.id:
+        receipt_list = Receipt.objects.filter(creator_id=str(request.user.id)).order_by("file_displayname")
     else:
         receipt_list = []
     context = {
-        'receipt_list': receipt_list
+        'receipt_list': receipt_list,
+        'user': request.user
     }
     return render(request, "ReceiptHub/receipt_index.html", context)
 
-# # Require login and "Employees" group membership
-# @method_decorator(login_required, name='dispatch')
-# @method_decorator(user_passes_test(is_employee), name='dispatch')
-class ReceiptIndexView(generic.ListView):
-    template_name = "ReceiptHub/receipt_index.html"
-    context_object_name = "receipt_list"
-    def get_queryset(self):
-        return Receipt.objects.all().order_by("file_displayname")[:50]
-
 
 def login_view(request):
-    if request.method == 'POST':
+    if request.user.is_authenticated:
+        messages.add_message(request, messages.SUCCESS, 'You are already logged in. Please log out to switch accounts!')
+        return redirect('ReceiptHub:receipt_index')
+    elif request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
@@ -78,12 +64,14 @@ def login_view(request):
         return render(request, 'ReceiptHub/login.html')
 
 
-
-# @login_required
 def logout_view(request):
-    logout(request)
-    messages.success(request, 'You have been successfully logged out.')
-    return redirect('ReceiptHub:login')
+    if request.user.is_authenticated:
+        logout(request)
+        messages.success(request, 'You have been successfully logged out.')
+        return redirect('ReceiptHub:login')
+    else:
+        messages.error(request, 'You were already logged out.')
+        return redirect('ReceiptHub:login')
 
 
 def create_account(request):
@@ -121,43 +109,38 @@ def create_account(request):
         # user = authenticate(request, username=username, password=password)
         login(request, user)
         # Redirect to a success page.
+        messages.success(request, 'You have successfully created an account!')
         return redirect('ReceiptHub:receipt_index')
-        
-    
     return render(request, 'ReceiptHub/create_account.html')
 
 
-
-# Require login and "Employees" group membership
-# @login_required
-# @user_passes_test(is_employee)
 def delete_receipt(request, file_uuid):
     receipt = get_object_or_404(Receipt, file_uuid=file_uuid)
-    receipt.delete()
-    return redirect('ReceiptHub:receipt_index')
+    # only staff or the creator of a receipt can delete it
+    # print(request.user.id)
+    # print(receipt.creator_id)
+    if request.user and (request.user.is_staff or str(request.user.id) == receipt.creator_id):
+        receipt.delete()
+        return redirect('ReceiptHub:receipt_index')
+    else:
+        messages.error(request, 'You are not authenticated to delete that receipt!')
+        return redirect('ReceiptHub:receipt_index')
+    
 
-# Require login and "Employees" group membership
-# @login_required
-# @user_passes_test(is_employee)
+
 def upload_file(request):
     context = {}
-    print(request.user)
-    print(request.user.pk)
-    if not request.user or not is_employee(request.user):
+    if not request.user or not is_employee(request.user) and not request.user.is_staff:
         # Return an 'invalid login' error message.
         messages.add_message(request, messages.ERROR, 'Please log in to upload files.')
         return redirect('ReceiptHub:login')
     if request.method == "POST":
-        # form = UploadFileForm(request.POST, request.FILES)
-        print("File uploaded with name: " + request.FILES['file'].name)
-        
-        # if form.is_valid():
-        print("Upload success")
+        # print("File uploaded with name: " + request.FILES['file'].name)
+        # print("Upload success")
         uploaded_file = request.FILES["file"]
-        
         receipt = Receipt()
-        
         receipt.save_file(uploaded_file, request.user.id)
+        
         context['url'] = receipt.url
         context['shown_filename'] = receipt.file_displayname
 
@@ -175,46 +158,4 @@ def upload_file(request):
             receipt.delete()
 
         return render(request, "ReceiptHub/upload_view.html", context=context)
-    # else:
-        # form = Receipt()
     return render(request, "ReceiptHub/upload_view.html", context)
-
-
-# class DetailView(generic.DetailView):
-#     model = Question
-#     template_name = "ReceiptHub/details.html"
-#     def get_queryset(self) -> QuerySet[Any]:
-#         return Question.objects.filter(pub_date__lte=timezone.now())
-
-
-# class ResultsView(generic.DetailView):
-#     model = Question
-#     template_name = "ReceiptHub/results.html"
-
-
-# def vote(request, question_id):
-#     question = get_object_or_404(Question, pk=question_id)
-#     try:
-#         selected_choice = question.choice_set.get(pk=request.POST["choice"])
-#     except (KeyError, Choice.DoesNotExist):
-#         # Redisplay the question voting form.
-#         return render(
-#             request,
-#             "ReceiptHub/detail.html",
-#             {
-#                 "question": question,
-#                 "error_message": "You didn't select a choice.",
-#             },
-#         )
-#     else:
-#         selected_choice.votes = F("votes") + 1
-#         selected_choice.save()
-#         # Always return an HttpResponseRedirect after successfully dealing
-#         # with POST data. This prevents data from being posted twice if a
-#         # user hits the Back button.
-#         return HttpResponseRedirect(reverse("ReceiptHub:results", args=(question.id,)))
-
-
-# def results(request, question_id):
-#     question = get_object_or_404(Question, pk=question_id)
-#     return render(request, "ReceiptHub/results.html", {"question": question})

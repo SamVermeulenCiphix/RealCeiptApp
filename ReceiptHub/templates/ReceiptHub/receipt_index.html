@@ -1,10 +1,27 @@
 {% block content %}
 <div style="background-color: #FFFFFF; padding: 20px; border: 2px solid #0047AB; border-radius: 10px; max-width: 800px; margin: 0 auto;">
-    <form action="{% url 'ReceiptHub:logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
+    {% if user.is_authenticated %}
+        <form action="{% url 'ReceiptHub:logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    {% else %}
+        <form action="{% url 'ReceiptHub:login' %}" method="get">
+            {% csrf_token %}
+            <button type="submit">Login</button>
+        </form>
+    {% endif %}
     <a href="{% url 'ReceiptHub:upload' %}" style="color: #0047AB; text-decoration: none; margin-bottom: 20px;">Upload a receipt</a><br> 
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <p style="color: #FF0000; margin-top: 10px;">{{ message }}</p>
+            {% elif message.tags == 'success' %}
+                <p style="color: #008000; margin-top: 10px;">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
     <h2 style="color: #0047AB; margin-bottom: 20px;">Uploaded receipts:</h2>
     {% if receipt_list %}
         <table style="border-collapse: collapse; width: 100%; margin-bottom: 20px;">
@@ -13,6 +30,9 @@
                     <th style="border: 1px solid #0047AB; padding: 8px; text-align: left;">Filename</th>
                     <th style="border: 1px solid #0047AB; padding: 8px; text-align: left;">Upload date</th>
                     <th style="border: 1px solid #0047AB; padding: 8px; text-align: left;">Total amount</th>
+                    {% if user.is_staff %}
+                        <th style="border: 1px solid #0047AB; padding: 8px; text-align: left;">Creator ID</th>
+                    {% endif %}
                     <th style="border: 1px solid #0047AB; padding: 8px; text-align: left;">Unique ID</th>
                 </tr>
             </thead>
@@ -22,6 +42,9 @@
                         <td style="border: 1px solid #dddddd; padding: 8px;"><a href="{% url 'ReceiptHub:receipt' receipt.file_uuid %}" style="color: #0047AB; text-decoration: none;">{{ receipt.file_displayname }}</a></td>
                         <td style="border: 1px solid #dddddd; padding: 8px;">{{ receipt.upload_date }}</td>
                         <td style="border: 1px solid #dddddd; padding: 8px;">€{{ receipt.total_amount }}</td>
+                        {% if user.is_staff %}
+                            <td style="border: 1px solid #dddddd; padding: 8px;">{{ receipt.creator_id }}</td>
+                        {% endif %}
                         <td style="border: 1px solid #dddddd; padding: 8px;">{{ receipt.file_uuid }}</td>
                     </tr>
                 {% endfor %}

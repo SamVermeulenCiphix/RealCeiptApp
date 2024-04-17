@@ -14,12 +14,7 @@ urlpatterns = [
     path("delete/<slug:file_uuid>", views.delete_receipt, name="delete"),
     path("receipts/", views.receipt_index_view, name="receipt_index"),
     path("receipts/<slug:file_uuid>/", views.receipt_view, name="receipt"),
-    # path("receipts/", views.ReceiptIndexView.as_view(), name="receipt_index"),
-    # path("receipts/<slug:file_uuid>/", views.ReceiptView.as_view(), name="receipt"),
-    # path("<int:pk>/", views.DetailView.as_view(), name="detail"),
-    # path("<int:pk>/results/", views.ResultsView.as_view(), name="results"),
-    # path("<int:question_id>/vote/", views.vote, name="vote"),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
