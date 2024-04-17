@@ -1,5 +1,9 @@
-login capability
-remove question and choice models
+requirements.txt and README
+it's a secret to everyone
+configure login capability for every view
+as a superuser/staff user, add an extra "made by" column and show every receipt
+save the files in aa->bb->file format if filename is aabbsomethingelse
+remove question and choice models comments
 make the website prettier
 azure deployment
 migrate the document processing to the Receipt fully
