@@ -1,6 +1,15 @@
 {% block content %}
 <div style="background-color: #FFFFFF; padding: 20px; border: 2px solid #0047AB; border-radius: 10px; max-width: 600px; margin: 20px auto;">
     <a href="{% url 'ReceiptHub:receipt_index' %}" style="color: #0047AB; text-decoration: none; margin-bottom: 20px; display: block;">Back to file overview</a> 
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <p style="color: #FF0000; margin-top: 10px;">{{ message }}</p>
+            {% elif message.tags == 'success' %}
+                <p style="color: #008000; margin-top: 10px;">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
     <h2 style="color: #0047AB; margin-bottom: 20px;">Upload a Receipt</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}

@@ -8,6 +8,7 @@ from .models import Receipt
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.utils.datastructures import MultiValueDictKeyError
 
 from .models import Receipt
 
@@ -137,7 +138,12 @@ def upload_file(request):
     if request.method == "POST":
         # print("File uploaded with name: " + request.FILES['file'].name)
         # print("Upload success")
-        uploaded_file = request.FILES["file"]
+        try:
+            uploaded_file = request.FILES["file"]
+        except MultiValueDictKeyError:
+            messages.error(request, "An error occurred reading the file. \nIt's likely you didn't select a file before clicking upload.")
+            print("MultiValueDictKeyError occurred when trying to access uploaded file")
+            return render(request, "ReceiptHub/upload_view.html", context=context)
         receipt = Receipt()
         receipt.save_file(uploaded_file, request.user.id)
         
@@ -158,7 +164,7 @@ def upload_file(request):
             receipt.delete()
 
         return render(request, "ReceiptHub/upload_view.html", context=context)
-    return render(request, "ReceiptHub/upload_view.html", context)
+    return render(request, "ReceiptHub/upload_view.html", context=context)
 
 
 

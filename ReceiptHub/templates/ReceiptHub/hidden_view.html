@@ -9,7 +9,7 @@
             font-size: 24px;
             padding: 10px;
             border: 0px solid #ccc;
-            margin-top: 20px;
+            margin-top: 10px;
             width: 200px;
         }
     </style>
@@ -32,7 +32,7 @@
         let outputDiv = document.getElementById("output1");
         let outputDiv2 = document.getElementById("output2");
         let normal_fontsize = '24px'
-        let medium_fontsize = '80px'
+        let medium_fontsize = '60px'
         let BIG_fontsize = '360px'
 
         document.addEventListener("keydown", function(event) {
@@ -57,7 +57,7 @@
                 if (currentIndex === sequence.length) {
                     outputDiv.style.fontSize = medium_fontsize
                     outputDiv2.style.fontSize = BIG_fontsize
-                    outputDiv.innerText = 'Congratulations on figuring out the secret password! \nPlease take this unicode snowman for your troubles <3';
+                    outputDiv.innerText = 'Congratulations on figuring out the secret password! Please take this unicode snowman for your troubles <3';
                     outputDiv2.innerText = '☃';
                     currentIndex = 0;
                 }
