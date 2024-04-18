@@ -69,9 +69,12 @@
         <input type="password" name="confirm_password" placeholder="Confirm Password">
         <input type="submit" value="Create Account">
     </form>
-    {% if error %}
-    <p class="error-message">{{ error }}</p>
+    {% if errors %}
+      {% for error in errors %}
+      <p style="color: #FF0000; margin-top: 10px;">{{ error }}</p>
+      {% endfor %}
     {% endif %}
+    <p>Already have an account? <a href="{% url 'ReceiptHub:login' %}" style="color: #0047AB; text-decoration: none; margin-bottom: 20px;">Log in</a></p>
 </div>
 
 </body>
