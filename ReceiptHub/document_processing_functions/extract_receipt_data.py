@@ -1,11 +1,22 @@
 import os
 import pandas as pd
+# when running this file locally, remove the "." for relative imports
+# when running it through the Django app, keep the "."
 from .extract_DOCX_data import extract_docx_data
 from .extract_PDF_data import extract_pdf_data
 from .extract_XLSX_data import extract_xlsx_data
 
-
-def extract_receipt_content(strFilePath: str) -> tuple[str, str, pd.DataFrame]:
+'''
+    extracts the content of a receipt
+    currently only works for PDF, DOCX and XLSX files
+    @input: 
+        strFilePath=str: absolute filepath to where the receipt is stored
+    @returns: 
+        str: status code
+        str: status message
+        pd_df: extracted contents
+'''
+def extract_receipt_content(strFilePath: str):
     _, strFileExtension = os.path.splitext(strFilePath)
     isWriteExtractedData = True
     
@@ -31,17 +42,18 @@ def extract_receipt_content(strFilePath: str) -> tuple[str, str, pd.DataFrame]:
 '''
 This function tests file extraction for PDF, XLSX and DOCX files
 It searches the given folder and its subfolders for these filetypes,
-then extracts their data and compares it to the expected result
-@input
+    then extracts their data and logs all errors and successful extractions
+
+@input:
+    strTestReceiptFolder=str: absolute path of folder that will be checked for receipt files
+@returns:
+    bool: True if all files were read and processed successfully, else False
 '''
-def test_extraction_all_types(strTestReceiptFolder, strTestReceiptContentFolder) -> str:
+def test_extraction_all_types(strTestReceiptFolder) -> str:
     
     if not os.path.isdir(strTestReceiptFolder):
         return "ERROR", f"Given folder {strTestReceiptFolder} does not refer to an existing directory"
-    
-    if not os.path.isdir(strTestReceiptContentFolder):
-        return "ERROR", f"Given folder {strTestReceiptContentFolder} does not refer to an existing directory"
-    
+        
     arrFoundFiles = []
     arrNotAcceptedFiles = []
     for path, _, files in os.walk(strTestReceiptFolder):
@@ -54,8 +66,6 @@ def test_extraction_all_types(strTestReceiptFolder, strTestReceiptContentFolder)
     print("Found files usable for extraction: " + '\n'  + '\n'.join(arrFoundFiles) + '\n')
     print("Found files NOT usable for extraction: " + '\n'  + '\n'.join(arrNotAcceptedFiles) + '\n')
 
-    #TODO: match the given files with a result file
-    #   Still a WIP, since I need to generate them first
 
     arrResults = [extract_receipt_content(file) for file in arrFoundFiles]
     isAllSuccessful = True
@@ -68,5 +78,4 @@ def test_extraction_all_types(strTestReceiptFolder, strTestReceiptContentFolder)
 
 if __name__ == "__main__": 
     strInputFolderPath = "ReceiptHub/document_processing_functions/TEST_receipt_files/input_files"
-    strExpectedOutputFPath = "ReceiptHub\document_processing_functions\TEST_receipt_files\generated_output"
-    test_extraction_all_types(strInputFolderPath, strExpectedOutputFPath)
+    test_extraction_all_types(strInputFolderPath)

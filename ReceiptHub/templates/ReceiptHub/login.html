@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #FFFFFF; /* White */
+    color: #36454F; /* Charcoal */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .container {
+    background-color: #FFFFFF; /* White */
+    padding: 20px;
+    border: 2px solid #0047AB; /* Cobalt Blue */
+    border-radius: 10px;
+    max-width: 400px; /* Adjust this value to increase the width */
+    width: 100%;
+  }
+  
+  h2 {
+    color: #0047AB; /* Cobalt Blue */
+    margin-bottom: 20px;
+  }
+  
+  input[type="text"],
+  input[type="password"] {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+  }
+  
+  input[type="submit"] {
+    background-color: #0047AB; /* Cobalt Blue */
+    color: #FFFFFF; /* White */
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  input[type="submit"]:hover {
+    background-color: #87CEEB; /* Sky Blue */
+  }
+
+  .error-message {
+    color: #FF0000;
+    margin-top: 10px;
+  }
+  
+  .success-message {
+    color: #008000;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Login</h2>
+    <form action="{% url 'ReceiptHub:login' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username">
+        <input type="password" name="password" placeholder="Password">
+        <input type="submit" value="Login">
+    </form>
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <p class="error-message">{{ message }}</p>
+            {% elif message.tags == 'success' %}
+                <p class="success-message">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <p style="text-align: center;">Don't have an account? <a href="{% url 'ReceiptHub:create_account' %}" style="color: #0047AB;">Create Account</a></p>
+</div>
+
+</body>
+</html>

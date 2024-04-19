@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A hidden retreat</title>
+    <style>
+        #output {
+            font-size: 24px;
+            padding: 10px;
+            border: 0px solid #ccc;
+            margin-top: 10px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'ReceiptHub:receipt_index' %}" style="color: #0047AB; text-decoration: none; margin-bottom: 20px; display: block;">Return to safety.</a> 
+
+    <h1>Your keyboard feels excited...</h1>
+    <p>"Welcome, Sherlock! Glad to see you made it here."</p>
+    <p>Some guy who you totally know is definitely sitting in the same room as you right now.</p>
+    <p>"Who is this Konami guy anyway? It's said he wrote some really cool code back in his day..."</p>
+    <p>You decide to investigate. You start by looking <b>up</b> at the ceiling.</p>
+    <p>"We all know this search will end at the <b>start</b>"</p>
+    <div id="output1"></div>
+    <div id="output2"></div>
+
+    <script>
+        // Define the sequence of characters to listen for
+        const sequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a', 's', 't', 'a', 'r', 't'];
+        let currentIndex = 0;
+        let outputDiv = document.getElementById("output1");
+        let outputDiv2 = document.getElementById("output2");
+        let normal_fontsize = '24px'
+        let medium_fontsize = '60px'
+        let BIG_fontsize = '360px'
+
+        document.addEventListener("keydown", function(event) {
+            let key = event.key;
+            outputDiv.innerText.fontsize()
+            // Check if the pressed key matches the current character in the sequence
+            outputDiv.style.fontSize = normal_fontsize
+            outputDiv2.style.fontSize = normal_fontsize
+            if (currentIndex === 0) {
+                // Clear the output if the first key in a sequence is pressed
+                outputDiv.innerText = '';
+                outputDiv2.innerText = '';
+                currentIndex = 0;
+            } 
+            if (key === sequence[currentIndex]) {
+                outputDiv.innerText += '*';
+
+                // Move to the next character in the sequence
+                currentIndex++;
+
+                // If the entire sequence has been entered, reset the index
+                if (currentIndex === sequence.length) {
+                    outputDiv.style.fontSize = medium_fontsize
+                    outputDiv2.style.fontSize = BIG_fontsize
+                    outputDiv.innerText = 'Congratulations on figuring out the secret password! Please take this unicode snowman for your troubles <3';
+                    outputDiv2.innerText = '☃';
+                    currentIndex = 0;
+                }
+            } else {
+                // Clear the output if the wrong key is pressed
+                outputDiv.innerText = '';
+                outputDiv2.innerText = '';
+                currentIndex = 0;
+            }
+        });
+    </script>
+</body>
+</html>

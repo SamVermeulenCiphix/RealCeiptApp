@@ -1,27 +1,39 @@
 {% block content %}
-<a href="{% url 'ReceiptHub:receipt_index' %}">Back to file overview</a><br> 
-<h2>Upload a receipt</h2>
- <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" name="file">
-    <button type="submit">Upload receipt</button>
- </form>
- {% if url and shown_filename %}
-    <p>Uploaded receipt: <a href="{{ url }}">{{ shown_filename }}</a></p>
- {% endif %}
+<div style="background-color: #FFFFFF; padding: 20px; border: 2px solid #0047AB; border-radius: 10px; max-width: 600px; margin: 20px auto;">
+    <a href="{% url 'ReceiptHub:receipt_index' %}" style="color: #0047AB; text-decoration: none; margin-bottom: 20px; display: block;">Back to file overview</a> 
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <p style="color: #FF0000; margin-top: 10px;">{{ message }}</p>
+            {% elif message.tags == 'success' %}
+                <p style="color: #008000; margin-top: 10px;">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <h2 style="color: #0047AB; margin-bottom: 20px;">Upload a Receipt</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="file" style="margin-bottom: 20px; display: block;">
+        <button type="submit" style="background-color: #0047AB; color: #FFFFFF; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px;">Upload Receipt</button>
+    </form>
 
- {% if error %}
-    <p>
-        Couldn't read receipt data with the following message:<br>
-        <b>{{ error }}</b>
-    </p>
- {% endif %}
+    {% if url and shown_filename %}
+        <p style="margin-top: 20px;">Uploaded receipt: <a href="{{ url }}" style="color: #0047AB; text-decoration: none;">{{ shown_filename }}</a></p>
+    {% endif %}
 
- {% if dataframe %}
-    <p>
-        Extracted data: <br>
-        Total amount: €{{ total_amount }}
-        {{ dataframe|safe }}
-    </p>
- {% endif %}
+    {% if error %}
+        <div style="background-color: #FFD6CC; color: #FF0000; border-radius: 5px; padding: 10px; margin-top: 20px;">
+            <p>Couldn't read receipt data with the following message:</p>
+            <p><b>{{ error }}</b></p>
+        </div>
+    {% endif %}
+
+    {% if dataframe %}
+        <div style="margin-top: 20px;">
+            <p>Extracted data:</p>
+            <p>Total amount: €{{ total_amount }}</p>
+            {{ dataframe|safe }}
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
