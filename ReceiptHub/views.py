@@ -91,17 +91,17 @@ def create_account(request):
     def validate_data(username, email, first_name, last_name, password, confirm_password):
         arrErrors = []
         # Check if any fields are empty
-        if not (username):
+        if not username:
             arrErrors.append('Username is required')
-        if not (email):
+        if not email:
             arrErrors.append('Email is required')
-        if not (first_name):
+        if not first_name:
             arrErrors.append('First name is required')
-        if not (last_name):
+        if not last_name:
             arrErrors.append('Last name is required')
-        if not (password):
+        if not password:
             arrErrors.append('Please enter a password')
-        if not (confirm_password):
+        if not confirm_password:
             arrErrors.append('Please enter the password confirmation')
 
         # Check if passwords match

@@ -78,5 +78,4 @@ def test_extraction_all_types(strTestReceiptFolder) -> str:
 
 if __name__ == "__main__": 
     strInputFolderPath = "ReceiptHub/document_processing_functions/TEST_receipt_files/input_files"
-    strExpectedOutputFPath = "ReceiptHub\document_processing_functions\TEST_receipt_files\generated_output"
-    test_extraction_all_types(strInputFolderPath, strExpectedOutputFPath)
+    test_extraction_all_types(strInputFolderPath)
